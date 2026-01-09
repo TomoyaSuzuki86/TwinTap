@@ -23,15 +23,15 @@ export function setupUI(handlers) {
   document.getElementById("btn-right").addEventListener("click", () => {
     handlers.onTap("R");
   });
-  document.getElementById("btn-unknown").addEventListener("click", () => {
-    handlers.onTap("U");
-  });
 
   document.getElementById("measure-start").addEventListener("click", () => {
     handlers.onMeasureStart();
   });
   document.getElementById("measure-tap").addEventListener("click", () => {
     handlers.onMeasureTap();
+  });
+  document.getElementById("measure-undo").addEventListener("click", () => {
+    handlers.onMeasureUndo();
   });
   document.getElementById("measure-reset").addEventListener("click", () => {
     handlers.onMeasureReset();
@@ -85,11 +85,15 @@ export function updateHomeNames(names) {
   if (!names) return;
   document.getElementById("btn-left").textContent = names.left;
   document.getElementById("btn-right").textContent = names.right;
+  document.getElementById("label-left").textContent = names.left;
+  document.getElementById("label-right").textContent = names.right;
+  document.getElementById("stats-left").textContent = names.left;
+  document.getElementById("stats-right").textContent = names.right;
 }
 
 export function setFamilyStatus(hasFamily) {
   const disabled = !hasFamily;
-  ["btn-left", "btn-right", "btn-unknown"].forEach((id) => {
+  ["btn-left", "btn-right"].forEach((id) => {
     document.getElementById(id).disabled = disabled;
   });
   document.getElementById("family-panel").style.display = hasFamily ? "block" : "none";
@@ -104,6 +108,7 @@ export function updateMeasureView(state) {
   document.getElementById("measure-count").textContent = `${state.count}/${state.target}`;
   document.getElementById("measure-start").disabled = !state.hasFamily || state.active;
   document.getElementById("measure-tap").disabled = !state.hasFamily || !state.active;
+  document.getElementById("measure-undo").disabled = !state.hasFamily || !state.active || !state.canUndo;
   document.getElementById("measure-reset").disabled = !state.hasFamily || !state.active;
 
   document.querySelectorAll("input[name='measure-baby']").forEach((radio) => {

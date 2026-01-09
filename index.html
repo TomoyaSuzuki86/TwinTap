@@ -30,7 +30,6 @@
             <button id="btn-left" class="tap-btn left">いのちゃん</button>
             <button id="btn-right" class="tap-btn right">ふーちゃん</button>
           </div>
-          <button id="btn-unknown" class="tap-btn unknown">どっちかわからない</button>
           <div id="home-hint" class="hint"></div>
         </section>
 
@@ -41,9 +40,8 @@
               <div class="field">
                 <div class="label">対象</div>
                 <div class="segmented" role="radiogroup" aria-label="対象">
-                  <label><input type="radio" name="measure-baby" value="L" checked />左</label>
-                  <label><input type="radio" name="measure-baby" value="R" />右</label>
-                  <label><input type="radio" name="measure-baby" value="U" />不明</label>
+                  <label><input type="radio" name="measure-baby" value="L" checked /><span id="label-left">いのちゃん</span></label>
+                  <label><input type="radio" name="measure-baby" value="R" /><span id="label-right">ふーちゃん</span></label>
                 </div>
               </div>
               <div class="field">
@@ -64,6 +62,7 @@
             <button id="measure-start" class="primary">計測開始</button>
             <button id="measure-tap" class="tap-btn primary" disabled>タップでカウント</button>
             <div class="measure-actions">
+              <button id="measure-undo" class="ghost" disabled>1回取り消す</button>
               <button id="measure-reset" class="ghost" disabled>リセット / 中止</button>
             </div>
           </div>
@@ -73,8 +72,8 @@
           <div class="card">
             <div class="section-title">集計</div>
             <div class="segmented" role="tablist" aria-label="集計切り替え">
-              <button id="stats-left" class="seg-btn active" data-baby="L">左</button>
-              <button id="stats-right" class="seg-btn" data-baby="R">右</button>
+              <button id="stats-left" class="seg-btn active" data-baby="L">いのちゃん</button>
+              <button id="stats-right" class="seg-btn" data-baby="R">ふーちゃん</button>
             </div>
             <div class="stats-grid">
               <div class="stat">
@@ -94,7 +93,6 @@
               <canvas id="stats-chart" width="320" height="160"></canvas>
               <div class="legend">
                 <span class="legend-item"><span class="dot normal"></span>対象</span>
-                <span class="legend-item"><span class="dot unknown"></span>不明を含む</span>
               </div>
             </div>
           </div>

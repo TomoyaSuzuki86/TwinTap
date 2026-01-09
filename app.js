@@ -1,6 +1,5 @@
 ﻿import { initFirebase, signInAnon } from "./firebase.js";
 import {
-  addEvent,
   addSession,
   clearUserFamily,
   createFamily,
@@ -46,6 +45,7 @@ setupUI({
   onTap: handleTap,
   onMeasureStart: startMeasure,
   onMeasureTap: incrementMeasure,
+  onMeasureUndo: undoMeasure,
   onMeasureReset: resetMeasure,
   onMeasureBabyChange: changeMeasureBaby,
   onMeasureTargetChange: changeMeasureTarget,
@@ -156,19 +156,29 @@ async function handleLeaveFamily() {
 
 async function handleTap(baby) {
   if (!state.familyId) return;
-  try {
-    await addEvent(db, state.familyId, baby, state.user.uid);
-    showToast("記録しました");
-  } catch (error) {
-    showToast("記録に失敗しました");
-  }
+  startMeasureFromHome(baby);
 }
 
 function startMeasure() {
   if (!state.familyId || state.measure.active) return;
+  beginMeasure(0);
+}
+
+function startMeasureFromHome(baby) {
+  if (!state.familyId) return;
+  if (state.measure.active && !confirm("計測中です。新しく開始しますか？")) {
+    return;
+  }
+  state.measure.baby = baby;
+  beginMeasure(1);
+  setRoute("measure");
+}
+
+function beginMeasure(initialCount) {
+  if (!state.familyId) return;
   state.measure.active = true;
   state.measure.startedAt = Date.now();
-  state.measure.count = 0;
+  state.measure.count = initialCount;
   state.measure.elapsedSec = 0;
   if (state.measure.timerId) clearInterval(state.measure.timerId);
   state.measure.timerId = setInterval(() => {
@@ -176,6 +186,9 @@ function startMeasure() {
     updateMeasure();
   }, 500);
   updateMeasure();
+  if (state.measure.count >= state.measure.target) {
+    finishMeasure();
+  }
 }
 
 function incrementMeasure() {
@@ -196,6 +209,14 @@ function resetMeasure() {
   state.measure.count = 0;
   state.measure.elapsedSec = 0;
   updateMeasure();
+}
+
+function undoMeasure() {
+  if (!state.measure.active) return;
+  if (state.measure.count > 0) {
+    state.measure.count -= 1;
+    updateMeasure();
+  }
 }
 
 function changeMeasureBaby(value) {
@@ -275,14 +296,13 @@ function updateMeasure() {
     baby: state.measure.baby,
     target: state.measure.target,
     count: state.measure.count,
+    canUndo: state.measure.count > 0,
     elapsedLabel: formatElapsed(state.measure.elapsedSec),
   });
 }
 
 function updateStats() {
-  const filtered = state.sessions.filter(
-    (session) => session.baby === state.statsBaby || session.baby === "U"
-  );
+  const filtered = state.sessions.filter((session) => session.baby === state.statsBaby);
   const lastSeven = filtered.slice(0, 7);
   const todaySession = filtered.find((session) => isSameDay(session.endedAt));
   const durations = filtered.map((session) => session.durationSec);

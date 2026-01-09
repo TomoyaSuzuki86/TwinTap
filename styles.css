@@ -235,6 +235,7 @@ input[type="number"] {
 .measure-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .stats-grid {
