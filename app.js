@@ -3,6 +3,7 @@ import {
   addSession,
   clearUserFamily,
   createFamily,
+  clearSessions,
   getUserFamilyId,
   joinFamily,
   subscribeFamily,
@@ -53,6 +54,7 @@ setupUI({
   onSaveNames: saveNames,
   onCreateFamily: handleCreateFamily,
   onLeaveFamily: handleLeaveFamily,
+  onClearSessions: handleClearSessions,
   onCopyInvite: copyInvite,
   onRouteChange: () => {},
 });
@@ -151,6 +153,17 @@ async function handleLeaveFamily() {
     showToast("端末を外しました");
   } catch (error) {
     showToast("処理に失敗しました");
+  }
+}
+
+async function handleClearSessions() {
+  if (!state.familyId) return;
+  if (!confirm("集計記録（計測セッション）をすべて削除しますか？")) return;
+  try {
+    await clearSessions(db, state.familyId);
+    showToast("集計記録を削除しました");
+  } catch (error) {
+    showToast("削除に失敗しました");
   }
 }
 

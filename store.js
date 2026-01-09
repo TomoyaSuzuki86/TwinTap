@@ -3,12 +3,14 @@
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   limit,
   query,
   setDoc,
   updateDoc,
+  writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const FAMILY_CODE_LENGTH = 6;
@@ -106,6 +108,16 @@ export async function addSession(db, familyId, session, uid) {
     baby: session.baby,
     createdBy: uid,
   });
+}
+
+export async function clearSessions(db, familyId) {
+  const sessionsRef = collection(db, "families", familyId, "sessions");
+  const snap = await getDocs(sessionsRef);
+  const batch = writeBatch(db);
+  snap.forEach((docSnap) => {
+    batch.delete(docSnap.ref);
+  });
+  await batch.commit();
 }
 
 export function subscribeFamily(db, familyId, onUpdate) {

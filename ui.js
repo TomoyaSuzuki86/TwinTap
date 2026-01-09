@@ -63,6 +63,9 @@ export function setupUI(handlers) {
   document.getElementById("leave-family").addEventListener("click", () => {
     handlers.onLeaveFamily();
   });
+  document.getElementById("clear-sessions").addEventListener("click", () => {
+    handlers.onClearSessions();
+  });
   document.getElementById("copy-invite").addEventListener("click", () => {
     handlers.onCopyInvite();
   });
