@@ -2,6 +2,7 @@
   addDoc,
   collection,
   doc,
+  deleteDoc,
   getDoc,
   getDocs,
   onSnapshot,
@@ -118,6 +119,10 @@ export async function clearSessions(db, familyId) {
     batch.delete(docSnap.ref);
   });
   await batch.commit();
+}
+
+export async function deleteSession(db, familyId, sessionId) {
+  await deleteDoc(doc(db, "families", familyId, "sessions", sessionId));
 }
 
 export function subscribeFamily(db, familyId, onUpdate) {

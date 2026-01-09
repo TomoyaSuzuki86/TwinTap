@@ -4,6 +4,7 @@ import {
   clearUserFamily,
   createFamily,
   clearSessions,
+  deleteSession,
   getUserFamilyId,
   joinFamily,
   subscribeFamily,
@@ -334,11 +335,28 @@ function updateStats() {
     rangeLabel,
     activeBaby: state.statsBaby,
     chartSessions: lastSeven.slice().reverse(),
+    listItems: filtered.slice(0, 10).map((session) => ({
+      id: session.id,
+      durationLabel: formatDuration(session.durationSec),
+      metaLabel: `${formatDateTime(session.endedAt)} / ${session.targetCount}回`,
+      onDelete: () => handleDeleteSession(session.id),
+    })),
     chartColors: {
       baseColor: "#d16666",
       unknownColor: "#b7b0a4",
     },
   });
+}
+
+async function handleDeleteSession(sessionId) {
+  if (!state.familyId) return;
+  if (!confirm("この計測記録を削除しますか？")) return;
+  try {
+    await deleteSession(db, state.familyId, sessionId);
+    showToast("削除しました");
+  } catch (error) {
+    showToast("削除に失敗しました");
+  }
 }
 
 function renderAll() {
@@ -378,6 +396,17 @@ function formatElapsed(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
+
+function formatDateTime(timestamp) {
+  if (!timestamp) return "--";
+  const date = new Date(timestamp);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const hh = String(date.getHours()).padStart(2, "0");
+  const min = String(date.getMinutes()).padStart(2, "0");
+  return `${yyyy}/${mm}/${dd} ${hh}:${min}`;
 }
 
 function buildInviteLink(familyId, token) {

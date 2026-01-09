@@ -134,6 +134,37 @@ export function updateStatsView(payload) {
 
   const canvas = document.getElementById("stats-chart");
   drawSessionChart(canvas, payload.chartSessions, payload.chartColors);
+
+  const list = document.getElementById("stats-sessions");
+  list.innerHTML = "";
+  if (!payload.listItems.length) {
+    list.innerHTML = "<div class=\"hint\">記録がありません</div>";
+    return;
+  }
+
+  payload.listItems.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "session-row";
+
+    const meta = document.createElement("div");
+    meta.className = "session-meta";
+    const title = document.createElement("div");
+    title.className = "session-duration";
+    title.textContent = item.durationLabel;
+    const sub = document.createElement("div");
+    sub.textContent = item.metaLabel;
+    meta.appendChild(title);
+    meta.appendChild(sub);
+
+    const del = document.createElement("button");
+    del.className = "session-delete";
+    del.textContent = "削除";
+    del.addEventListener("click", () => item.onDelete());
+
+    row.appendChild(meta);
+    row.appendChild(del);
+    list.appendChild(row);
+  });
 }
 
 export function updateSettingsView(payload) {
