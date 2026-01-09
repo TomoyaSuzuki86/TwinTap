@@ -16,7 +16,7 @@
 
 body {
   margin: 0;
-  font-family: "Yu Mincho", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
   color: var(--ink);
   background: radial-gradient(circle at top, #fff6e5 0%, #f4f1ea 45%, #ece7de 100%);
   min-height: 100vh;
@@ -312,7 +312,7 @@ input[type="number"] {
   }
 
   .home-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
