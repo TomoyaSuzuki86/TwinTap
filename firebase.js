@@ -7,12 +7,12 @@ import {
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyAtlaX3MnT38Gru_yColYICu2uQP62bbBs",
+  authDomain: "twintap-15f33.firebaseapp.com",
+  projectId: "twintap-15f33",
+  storageBucket: "twintap-15f33.firebasestorage.app",
+  messagingSenderId: "1037345632592",
+  appId: "1:1037345632592:web:e03e28c690be99f2bdbc55",
 };
 
 export function initFirebase() {
