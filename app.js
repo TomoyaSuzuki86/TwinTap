@@ -84,6 +84,12 @@ async function boot() {
 
   renderAll();
   setRoute((location.hash || "#home").replace("#", ""));
+  registerServiceWorker();
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
 }
 
 async function handleFamilyFromUrl() {
