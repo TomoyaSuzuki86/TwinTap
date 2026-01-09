@@ -55,6 +55,7 @@ export async function createFamily(db, uid) {
   await setDoc(doc(db, "families", familyDoc.id, "members", uid), {
     joinedAt: now,
     role: "member",
+    joinToken,
   });
 
   await setDoc(doc(db, "users", uid), { familyId: familyDoc.id });
@@ -63,22 +64,18 @@ export async function createFamily(db, uid) {
 }
 
 export async function joinFamily(db, uid, familyId, token) {
-  const familyRef = doc(db, "families", familyId);
-  const snap = await getDoc(familyRef);
-  if (!snap.exists()) {
-    throw new Error("family-not-found");
-  }
-  const data = snap.data();
-  if (data.joinToken !== token) {
-    throw new Error("invalid-token");
-  }
   const now = Date.now();
   await setDoc(doc(db, "families", familyId, "members", uid), {
     joinedAt: now,
     role: "member",
+    joinToken: token,
   });
   await setDoc(doc(db, "users", uid), { familyId });
-  return data;
+  const snap = await getDoc(doc(db, "families", familyId));
+  if (!snap.exists()) {
+    throw new Error("family-not-found");
+  }
+  return snap.data();
 }
 
 export async function clearUserFamily(db, uid) {
